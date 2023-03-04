@@ -4,13 +4,13 @@
 #include "heap.hpp"
 
 TEST(HeapTest, Simple) {
-  MinHeap heap;
+  MinHeap<int> heap;
   heap.Push(1);
   ASSERT_EQ(heap.PopMin(), 1);
 }
 
 TEST(HeapTest, Basic) {
-  MinHeap heap;
+  MinHeap<int> heap;
   heap.Push(1);
   heap.Push(2);
   heap.Push(3);              // [1, 2, 3]
@@ -20,7 +20,7 @@ TEST(HeapTest, Basic) {
 }
 
 TEST(HeapTest, Empty) {
-  MinHeap heap;
+  MinHeap<int> heap;
   ASSERT_ANY_THROW(heap.PopMin());
   heap.Push(1);
   ASSERT_EQ(heap.PopMin(), 1);  // [(1), 2, 3]
@@ -28,7 +28,7 @@ TEST(HeapTest, Empty) {
 }
 
 TEST(HeapTest, Complex) {
-  MinHeap heap;
+  MinHeap<int> heap;
   heap.Push(6);              // [6]
   heap.Push(1);              // [1, 6]
   heap.Push(2);              // [1, 2, 6]
@@ -56,9 +56,23 @@ TEST(HeapTest, Complex) {
 }
 
 TEST(HeapTest, Additional) {
-  MinHeap heap;
+  MinHeap<int> heap;
   heap.Push(0);                 //  [0]
   heap.Push(-1);                //  [-1, 0]
   heap.Push(-10);               //  [-10, -1, 0]
+  ASSERT_EQ(heap.Size(), 3);
   ASSERT_EQ(heap.PopMin(), -10);      //  [-1, 0]
+}
+
+TEST(HeapTest, Double) {
+  MinHeap<double> heap;
+  heap.Push(0.1);                 //  [0.1]
+  heap.Push(-1.9);                //  [-1.9, 0.1]
+  heap.Push(-10.8);               //  [-10.8, -1.9, 0.1]
+  ASSERT_EQ(heap.Size(), 3);
+  ASSERT_EQ(heap.PopMin(), -10.8);      //  [-1.9, 0.1]
+  ASSERT_EQ(heap.PopMin(), -1.9);       //  [0.1]
+  ASSERT_EQ(heap.GetMin(), 0.1);        //  [0.1]
+  ASSERT_EQ(heap.PopMin(), 0.1);        //  []
+  ASSERT_ANY_THROW(heap.PopMin());
 }
