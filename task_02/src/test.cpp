@@ -54,3 +54,11 @@ TEST(HeapTest, Complex) {
   ASSERT_EQ(heap.PopMin(), 6);  // [7] -> 6
   ASSERT_EQ(heap.PopMin(), 7);  // [] -> 7
 }
+
+TEST(HeapTest, Additional) {
+  MinHeap heap;
+  heap.Push(0);                 //  [0]
+  heap.Push(-1);                //  [-1, 0]
+  heap.Push(-10);               //  [-10, -1, 0]
+  ASSERT_EQ(heap.PopMin(), -10);      //  [-1, 0]
+}
