@@ -10,3 +10,5 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/task_05)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/task_06)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/sandbox)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/additional_tasks)

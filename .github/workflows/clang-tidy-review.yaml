@@ -14,6 +14,7 @@ jobs:
 
     - uses: ZedThree/clang-tidy-review@v0.10.1
       with:
+        clang_tidy_checks: '-*,performance-*,bugprone-*,clang-analyzer-*,cppcoreguidelines-*,mpi-*,misc-*'
         split_workflow: true
 
     - uses: actions/upload-artifact@v3
