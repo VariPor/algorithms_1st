@@ -43,8 +43,8 @@ TEST(MinStackTest, Simple) {
 
 TEST(StackTest, Additional) {
   Stack stack;
-  stack.Push(9);              // Stack [9]
-  stack.Push(-3);              // Stack [9, -3]
-  stack.Push(2);              // Stack [9, 3, 2]
-  ASSERT_EQ(stack.GetLast(), 2);    // Stack [9, 3, 2]
+  stack.Push(9);                  // Stack [9]
+  stack.Push(-3);                 // Stack [9, -3]
+  stack.Push(2);                  // Stack [9, 3, 2]
+  ASSERT_EQ(stack.GetLast(), 2);  // Stack [9, 3, 2]
 }

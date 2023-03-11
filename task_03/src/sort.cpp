@@ -2,10 +2,8 @@
 
 #include <vector>
 
-
 std::vector<int> Sort(const std::vector<int>& data) {
-  if (data.size() <= 1)
-    return data;
+  if (data.size() <= 1) return data;
   std::vector<int> result;
   std::vector<int> v1;
   std::vector<int> v2;
@@ -19,7 +17,7 @@ std::vector<int> Sort(const std::vector<int>& data) {
   }
   v1 = Sort(v1);
   v2 = Sort(v2);
-  for (int i = 0, j = 0; i < v1.size() || j < v2.size(); ) {
+  for (int i = 0, j = 0; i < v1.size() || j < v2.size();) {
     if (v1[i] <= v2[j]) {
       result.push_back(v1[i]);
       ++i;
@@ -31,7 +29,7 @@ std::vector<int> Sort(const std::vector<int>& data) {
       result.push_back(v2[j]);
       ++j;
       if (j == v2.size()) {
-      result.insert(result.end(), v1.begin() + i, v1.end());
+        result.insert(result.end(), v1.begin() + i, v1.end());
         break;
       }
     }

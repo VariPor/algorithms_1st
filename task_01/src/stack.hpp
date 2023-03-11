@@ -7,13 +7,14 @@ class Stack {
   void Push(int value);
   int Pop();
   bool IsEmpty();
+
   int GetLast();
 
  private:
   std::vector<int> data_;
 };
 
-class MinStack : Stack{
+class MinStack : Stack {
  public:
   void Push(int value);
   int Pop();
