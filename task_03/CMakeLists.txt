@@ -24,11 +24,11 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 # Link runTests with what we want to test and the GTest and pthread library
-add_executable(tests_03 ${test_source_list})
+add_executable(${PROJECT_NAME}_tests ${test_source_list})
 target_link_libraries(
-  tests_03
+  ${PROJECT_NAME}_tests
   GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(tests_03)
+gtest_discover_tests(${PROJECT_NAME}_tests)
