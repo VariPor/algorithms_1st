@@ -1,5 +1,9 @@
 #include <iostream>
+<<<<<<< HEAD
 #include <math.h>
+=======
+#include <vector>
+>>>>>>> ccdf496ec5018f0db7f3af688634a35ad2d83c2a
 
 int divCount (int n) {
     for (int j = 2; j <= n / 5 + 1; ++j) {

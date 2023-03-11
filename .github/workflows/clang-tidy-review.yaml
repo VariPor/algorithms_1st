@@ -4,21 +4,22 @@ name: clang-tidy-review
 on: [pull_request]
 
 jobs:
-  clang-tidy-review:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-      # Optionally generate compile_commands.json
+    # Optionally generate compile_commands.json
 
-      - uses: ZedThree/clang-tidy-review@v0.10.0
-        with:
-          split_workflow: true
+    - uses: ZedThree/clang-tidy-review@v0.10.1
+      with:
+        clang_tidy_checks: '-*,performance-*,bugprone-*,clang-analyzer-*,cppcoreguidelines-*,mpi-*,misc-*'
+        split_workflow: true
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: clang-tidy-review
-          path: |
-            clang-tidy-review-output.json
-            clang-tidy-review-metadata.json
+    - uses: actions/upload-artifact@v3
+      with:
+        name: clang-tidy-review
+        path: |
+          clang-tidy-review-output.json
+          clang-tidy-review-metadata.json
