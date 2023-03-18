@@ -17,10 +17,8 @@ int QuickSelect(const std::vector<int>& d, const size_t n) {
   int i = 0;
   int j = data.size() - 1;
   while (i < pivot || j > pivot) {
-    while (i < pivot && data[i] <= data[pivot])
-      ++i;
-    while (data[j] >= data[pivot] && j > pivot)
-      --j;
+    while (i < pivot && data[i] <= data[pivot]) ++i;
+    while (data[j] >= data[pivot] && j > pivot) --j;
     if (i < pivot && j > pivot) {
       int temp = data[i];
       data[i] = data[j];
@@ -39,23 +37,21 @@ int QuickSelect(const std::vector<int>& d, const size_t n) {
       data[i] = temp;
       j = data.size() - 1;
     }
-  
-    }
+  }
 
-    if (pivot == n) return data[pivot];
+  if (pivot == n) return data[pivot];
 
-    if (n < pivot) {
-      std::vector<int> temp(pivot);
-      std::copy(data.begin(), data.begin() + pivot, temp.begin());
-      return QuickSelect(temp, n);
-    }
+  if (n < pivot) {
+    std::vector<int> temp(pivot);
+    std::copy(data.begin(), data.begin() + pivot, temp.begin());
+    return QuickSelect(temp, n);
+  }
 
-    if (n > pivot) {
-      std::vector<int> temp(d.size() - pivot - 1);
-      std::copy(data.begin() + pivot + 1, data.end(), temp.begin());
-      return QuickSelect(temp, n - pivot - 1);
-    }
-  
+  if (n > pivot) {
+    std::vector<int> temp(d.size() - pivot - 1);
+    std::copy(data.begin() + pivot + 1, data.end(), temp.begin());
+    return QuickSelect(temp, n - pivot - 1);
+  }
 }
 
 int GetOrderStatistics(const std::vector<int>& data, size_t n) {
