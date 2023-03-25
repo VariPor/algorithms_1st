@@ -2,37 +2,38 @@
 
 #include <vector>
 
-std::vector<int> Sort(const std::vector<int>& data) {
-  if (data.size() <= 1) return data;
-  std::vector<int> result;
-  std::vector<int> v1;
-  std::vector<int> v2;
-  for (int i = 0; i < data.size() / 2 + data.size() % 2; ++i) {
-    if (i == data.size() / 2 && data.size() % 2 == 1) {
-      v1.push_back(data[i]);
+std::vector<int> Sort(const std::vector<int>& input) {
+  if (input.size() <= 1) return input;
+  std::vector<int> output;
+  std::vector<int> smaller_part;
+  std::vector<int> bigger_part;
+  for (int i = 0; i < input.size() / 2 + input.size() % 2; ++i) {
+    if (i == input.size() / 2 && input.size() % 2 == 1) {
+      smaller_part.push_back(input[i]);
       break;
     }
-    v1.push_back(data[i]);
-    v2.push_back(data[i + data.size() / 2 + data.size() % 2]);
+    smaller_part.push_back(input[i]);
+    bigger_part.push_back(input[i + input.size() / 2 + input.size() % 2]);
   }
-  v1 = Sort(v1);
-  v2 = Sort(v2);
-  for (int i = 0, j = 0; i < v1.size() || j < v2.size();) {
-    if (v1[i] <= v2[j]) {
-      result.push_back(v1[i]);
+  smaller_part = Sort(smaller_part);
+  bigger_part = Sort(bigger_part);
+  for (int i = 0, j = 0; i < smaller_part.size() || j < bigger_part.size();) {
+    if (smaller_part[i] <= bigger_part[j]) {
+      output.push_back(smaller_part[i]);
       ++i;
-      if (i == v1.size()) {
-        result.insert(result.end(), v2.begin() + j, v2.end());
+      if (i == smaller_part.size()) {
+        output.insert(output.end(), bigger_part.begin() + j, bigger_part.end());
         break;
       }
     } else {
-      result.push_back(v2[j]);
+      output.push_back(bigger_part[j]);
       ++j;
-      if (j == v2.size()) {
-        result.insert(result.end(), v1.begin() + i, v1.end());
+      if (j == bigger_part.size()) {
+        output.insert(output.end(), smaller_part.begin() + i,
+                      smaller_part.end());
         break;
       }
     }
   }
-  return result;
+  return output;
 }

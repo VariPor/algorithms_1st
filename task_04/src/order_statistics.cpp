@@ -2,15 +2,15 @@
 
 #include <random>
 
-int GenRandInd(const int n) {
+size_t GenRandInd(const size_t n) {
   std::random_device rd;   // non-deterministic generator
   std::mt19937 gen(rd());  // to seed mersenne twister.
   std::uniform_int_distribution<> dist(0, n - 1);
   return dist(gen);
 }
 
-int QuickSelect(const std::vector<int>& d, const size_t n) {
-  std::vector<int> data{d};
+int QuickSelect(const std::vector<int>& input, const size_t n) {
+  std::vector<int> data{input};
   if (data.size() == 1) return data[0];
   int pivot = GenRandInd(data.size());
 
@@ -48,7 +48,7 @@ int QuickSelect(const std::vector<int>& d, const size_t n) {
   }
 
   if (n > pivot) {
-    std::vector<int> temp(d.size() - pivot - 1);
+    std::vector<int> temp(input.size() - pivot - 1);
     std::copy(data.begin() + pivot + 1, data.end(), temp.begin());
     return QuickSelect(temp, n - pivot - 1);
   }
