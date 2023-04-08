@@ -13,7 +13,7 @@ bool HashTable::Contains(const std::string& key) {
   for (int i = 0; i < data_[hash].size(); ++i)
     if (data_[hash][i].first == key) return true;
   return false;
-} 
+}
 
 bool HashTable::Insert(const std::string& key, int value) {
   int hash = hasher_(key) % data_.size();
