@@ -2,17 +2,20 @@
 
 #include <cstddef>
 #include <string>
-#include <unordered_map>
+#include <vector>
 
 class HashTable {
  public:
-  HashTable();
+  HashTable(int k = 20);
   bool Insert(const std::string& key, int value);
   void InsertOrUpdate(const std::string& key, int value);
   void Remove(const std::string& key);
   int Find(const std::string& key) const;
   size_t Size() const;
+  bool Contains(const std::string& key);
 
  private:
-  std::unordered_map<std::string, int> data_;
+  std::vector<std::vector<std::pair<std::string, int>>> data_;
+  std::hash<std::string> hasher_;
+  size_t keys_count_ = 0;
 };
