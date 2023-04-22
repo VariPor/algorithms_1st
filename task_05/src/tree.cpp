@@ -77,7 +77,60 @@ std::pair<Tree::Node &, int> Tree::FindWithoutSplay(int key) {
     return std::pair<Node &, int>(*(root.get()), root->value);
 }
 
-void Tree::Delete(int key) {}
+void Tree::Delete(int key) {
+  auto deleting_node = FindWithoutSplay(key).first;
+  if (deleting_node.leftChild == nullptr &&
+      deleting_node.rightChild == nullptr) {
+    if (*(root.get()) != deleting_node) {
+      if (IsLeftChild(deleting_node))
+        deleting_node.parent->leftChild = nullptr;
+      else
+        deleting_node.parent->rightChild = nullptr;
+    }
+  } else
+    root = nullptr;
+
+  if (deleting_node.leftChild == nullptr &&
+      deleting_node.rightChild != nullptr) {
+    if (*(root.get()) != deleting_node) {
+      if (IsLeftChild(deleting_node))
+        deleting_node.parent->leftChild = deleting_node.rightChild;
+      else
+        deleting_node.parent->rightChild = deleting_node.rightChild;
+      deleting_node.rightChild = deleting_node.parent;
+    }
+  }
+
+  if (deleting_node.leftChild != nullptr &&
+      deleting_node.rightChild == nullptr) {
+    if (*(root.get()) != deleting_node) {
+      if (IsLeftChild(deleting_node))
+        deleting_node.parent->leftChild = deleting_node.leftChild;
+      else
+        deleting_node.parent->rightChild = deleting_node.leftChild;
+      deleting_node.leftChild = deleting_node.parent;
+    }
+  }
+
+  if (deleting_node.leftChild != nullptr &&
+      deleting_node.rightChild != nullptr) {
+    auto new_node = deleting_node.rightChild;
+    while (new_node->leftChild != nullptr) new_node = new_node->leftChild;
+    if (IsLeftChild(*(new_node.get())))
+      new_node->parent->leftChild = nullptr;
+    else
+      new_node->parent->rightChild = nullptr;
+    new_node->parent = deleting_node.parent;
+    new_node->leftChild = deleting_node.leftChild;
+    new_node->rightChild = deleting_node.rightChild;
+    if (IsLeftChild(*(new_node.get())))
+      deleting_node.parent->leftChild = new_node;
+    else
+      deleting_node.parent->rightChild = new_node;
+    deleting_node.leftChild->parent = new_node;
+    deleting_node.rightChild->parent = new_node;
+  }
+}
 
 void Tree::Zig(Node &element) {
   if (!element.parent) return;
