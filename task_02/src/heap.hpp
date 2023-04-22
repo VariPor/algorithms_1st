@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <functional>
@@ -16,41 +17,39 @@ class MinHeap {
 
  private:
   std::vector<T> data_;
-  void SiftUp(int);
+  void SiftUp(int currindex);
   void SiftDown();
-  int height_ = 0;
   void ChangeHigh();
+  size_t height_ = 0;
 };
 
 template <typename T>
 void MinHeap<T>::SiftDown() {
   if (data_.size() <= 1) return;
-  int curr_ind = 0;  // start on the top
+  int curr_index = 0;  // start on the top
   for (int i = 0, j = 1; i < height_ - 1; ++i, j = 2 * i + 1) {
     if (data_[j] < data_[j + 1] && data_[j] < data_[i]) {
-      T temp = data_[curr_ind];
-      data_[curr_ind] = data_[j];
-      data_[j] = temp;
-      curr_ind = j;
+      std::swap(data_[curr_index], data_[j]);
+      curr_index = j;
     } else if (data_[j] > data_[j + 1] && data_[j + 1] < data_[i]) {
-      T temp = data_[curr_ind];
-      data_[curr_ind] = data_[j + 1];
+      T temp = data_[curr_index];
+      data_[curr_index] = data_[j + 1];
       data_[j + 1] = temp;
-      curr_ind = j + 1;
+      curr_index = j + 1;
     } else
       break;  // as low as possible
   }
 }
 
 template <typename T>
-void MinHeap<T>::SiftUp(int ind_num_up) {
+void MinHeap<T>::SiftUp(int curr_index) {
   if (data_.size() <= 1) return;
   for (int i = height_; i > 0; ++i) {
-    if (data_[ind_num_up] < data_[(ind_num_up - 1) / 2]) {
-      T temp = data_[ind_num_up];
-      data_[ind_num_up] = data_[(ind_num_up - 1) / 2];
-      data_[(ind_num_up - 1) / 2] = temp;
-      ind_num_up = (ind_num_up - 1) / 2;
+    if (data_[curr_index] < data_[(curr_index - 1) / 2]) {
+      T temp = data_[curr_index];
+      data_[curr_index] = data_[(curr_index - 1) / 2];
+      data_[(curr_index - 1) / 2] = temp;
+      curr_index = (curr_index - 1) / 2;
     } else
       break;
   }
@@ -90,5 +89,6 @@ void MinHeap<T>::ChangeHigh() {
 
 template <typename T>
 T MinHeap<T>::GetMin() {
+  if (data_.empty()) throw std::out_of_range("Empty heap");
   return data_[0];
 }

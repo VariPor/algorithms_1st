@@ -7,13 +7,14 @@ std::vector<int> Sort(const std::vector<int>& input) {
   std::vector<int> output;
   std::vector<int> smaller_part;
   std::vector<int> bigger_part;
-  for (int i = 0; i < input.size() / 2 + input.size() % 2; ++i) {
+  size_t middle = input.size() / 2 + input.size() % 2;
+  for (int i = 0; i < middle; ++i) {
     if (i == input.size() / 2 && input.size() % 2 == 1) {
       smaller_part.push_back(input[i]);
       break;
     }
     smaller_part.push_back(input[i]);
-    bigger_part.push_back(input[i + input.size() / 2 + input.size() % 2]);
+    bigger_part.push_back(input[i + middle]);
   }
   smaller_part = Sort(smaller_part);
   bigger_part = Sort(bigger_part);

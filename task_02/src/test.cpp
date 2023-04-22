@@ -25,6 +25,7 @@ TEST(HeapTest, Empty) {
   heap.Push(1);
   ASSERT_EQ(heap.PopMin(), 1);  // [(1), 2, 3]
   ASSERT_ANY_THROW(heap.PopMin());
+  ASSERT_ANY_THROW(heap.GetMin());
 }
 
 TEST(HeapTest, Complex) {

@@ -47,4 +47,9 @@ TEST(StackTest, Additional) {
   stack.Push(-3);                 // Stack [9, -3]
   stack.Push(2);                  // Stack [9, 3, 2]
   ASSERT_EQ(stack.GetLast(), 2);  // Stack [9, 3, 2]
+  stack.Push(5);
+  stack.Push(4);
+  stack.Push(4);
+  stack.Pop();
+  ASSERT_EQ(stack.GetLast(), 4);
 }

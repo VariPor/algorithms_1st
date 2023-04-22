@@ -2,7 +2,7 @@
 
 #include <random>
 
-size_t GenRandInd(const size_t n) {
+size_t GenRandIndex(const size_t n) {
   std::random_device rd;   // non-deterministic generator
   std::mt19937 gen(rd());  // to seed mersenne twister.
   std::uniform_int_distribution<> dist(0, n - 1);
@@ -12,7 +12,7 @@ size_t GenRandInd(const size_t n) {
 int QuickSelect(const std::vector<int>& input, const size_t n) {
   std::vector<int> data{input};
   if (data.size() == 1) return data[0];
-  int pivot = GenRandInd(data.size());
+  int pivot = GenRandIndex(data.size());
 
   int i = 0;
   int j = data.size() - 1;
