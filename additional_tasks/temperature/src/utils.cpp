@@ -12,7 +12,7 @@ struct Day {
 
 std::vector<int> CalculateDaysBeforWarmup(
     const std::vector<float>& temperature) {
-  size_t size = temperature.size();
+  const size_t size = temperature.size();
   std::stack<Day> add_stack;
   std::vector<int> res(size);
 

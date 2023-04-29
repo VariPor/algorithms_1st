@@ -32,9 +32,7 @@ void MinHeap<T>::SiftDown() {
       std::swap(data_[curr_index], data_[j]);
       curr_index = j;
     } else if (data_[j] > data_[j + 1] && data_[j + 1] < data_[i]) {
-      T temp = data_[curr_index];
-      data_[curr_index] = data_[j + 1];
-      data_[j + 1] = temp;
+      std::swap(data_[curr_index], data_[j + 1]);
       curr_index = j + 1;
     } else
       break;  // as low as possible
@@ -46,9 +44,7 @@ void MinHeap<T>::SiftUp(int curr_index) {
   if (data_.size() <= 1) return;
   for (int i = height_; i > 0; ++i) {
     if (data_[curr_index] < data_[(curr_index - 1) / 2]) {
-      T temp = data_[curr_index];
-      data_[curr_index] = data_[(curr_index - 1) / 2];
-      data_[(curr_index - 1) / 2] = temp;
+      std::swap(data_[curr_index], data_[(curr_index - 1) / 2]);
       curr_index = (curr_index - 1) / 2;
     } else
       break;

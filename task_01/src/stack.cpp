@@ -1,11 +1,13 @@
 #include "stack.hpp"
 
 #include <algorithm>
+#include <stdexcept>
 
 void Stack::Push(int value) { data_.push_back(value); }
 
 int Stack::Pop() {
-  auto result = data_[data_.size() - 1];
+  if (data_.empty()) throw std::out_of_range{"Empty stack"};
+  auto result = data_.back();
   data_.pop_back();
   return result;
 }
@@ -22,6 +24,7 @@ void MinStack::Push(int value) {
 }
 
 int MinStack::Pop() {
+  if (data_.empty()) throw std::out_of_range{"Empty stack"};
   auto result = data_.back();
   data_.pop_back();
   if (result == minimums_.GetLast()) {

@@ -9,48 +9,38 @@ size_t GenRandIndex(const size_t n) {
   return dist(gen);
 }
 
-int QuickSelect(const std::vector<int>& input, const size_t n) {
+int QuickSelect(const std::vector<int>& input, const size_t k) {
   std::vector<int> data{input};
   if (data.size() == 1) return data[0];
   int pivot = GenRandIndex(data.size());
 
-  int i = 0;
-  int j = data.size() - 1;
-  while (i < pivot || j > pivot) {
-    while (i < pivot && data[i] <= data[pivot]) ++i;
-    while (data[j] >= data[pivot] && j > pivot) --j;
-    if (i < pivot && j > pivot) {
-      int temp = data[i];
-      data[i] = data[j];
-      data[j] = temp;
+  int start = 0;
+  int end = data.size();
+  std::swap(data[pivot], data[end - 1]);
+  pivot = end - 1;
+  int i = start, j = start;
+
+  while (true) {
+    for (; j < end - 1;) {
+      if (data[j] <= data[pivot]) {
+        std::swap(data[i], data[j]);
+        ++i;
+        ++j;
+      }
+      if (data[j] > data[pivot]) ++j;
     }
-    if (i == pivot && j > pivot) {
-      int temp = data[pivot];
-      data[pivot] = data[j];
-      data[j] = temp;
-      i = 0;
-    }
+    std::swap(data[i], data[pivot]);
+    if (i == k) return data[i];
+    if (i > k)
+      end = i;
+    else if (i < k)
+      start = i;
 
-    if (j == pivot && i < pivot) {
-      int temp = data[pivot];
-      data[pivot] = data[i];
-      data[i] = temp;
-      j = data.size() - 1;
-    }
-  }
-
-  if (pivot == n) return data[pivot];
-
-  if (n < pivot) {
-    std::vector<int> temp(pivot);
-    std::copy(data.begin(), data.begin() + pivot, temp.begin());
-    return QuickSelect(temp, n);
-  }
-
-  if (n > pivot) {
-    std::vector<int> temp(input.size() - pivot - 1);
-    std::copy(data.begin() + pivot + 1, data.end(), temp.begin());
-    return QuickSelect(temp, n - pivot - 1);
+    pivot = start + GenRandIndex(end - start);
+    std::swap(data[pivot], data[end - 1]);
+    pivot = end - 1;
+    i = start;
+    j = start;
   }
 }
 
