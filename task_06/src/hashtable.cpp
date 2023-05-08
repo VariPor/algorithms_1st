@@ -24,6 +24,7 @@ bool HashTable::Insert(const std::string& key, int value) {
   if (Contains(key)) return false;
   data_[hash_w][hash_h] = std::pair<std::string, int>(key, value);
   keys_count_ += 1;
+  this->Rehash();
   return true;
 }
 
@@ -32,6 +33,7 @@ void HashTable::InsertOrUpdate(const std::string& key, int value) {
   int hash_h = hasher_(key) % height_;
   if (!Contains(key)) keys_count_ += 1;
   data_[hash_w][hash_h] = std::pair<std::string, int>(key, value);
+  this->Rehash();
 }
 
 void HashTable::Remove(const std::string& key) {
@@ -40,6 +42,7 @@ void HashTable::Remove(const std::string& key) {
   if (!Contains(key)) throw std::out_of_range("no such key");
   keys_count_ -= 1;
   data_[hash_w][hash_h] = std::pair<std::string, int>();
+  this->Rehash();
 }
 
 int HashTable::Find(const std::string& key) const {
@@ -62,6 +65,6 @@ void HashTable::Rehash() {
   for (int i = 0; i < width_; ++i)
     for (int j = 0; j < height_; ++j)
       new_hash_table.Insert(data_.at(i).at(j).first, data_.at(i).at(j).second);
-  
+
   *this = new_hash_table;
 }
