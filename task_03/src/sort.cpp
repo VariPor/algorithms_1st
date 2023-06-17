@@ -5,17 +5,10 @@
 std::vector<int> Sort(const std::vector<int>& input) {
   if (input.size() <= 1) return input;
   std::vector<int> output;
-  std::vector<int> smaller_part;
-  std::vector<int> bigger_part;
   size_t middle = input.size() / 2 + input.size() % 2;
-  for (int i = 0; i < middle; ++i) {
-    if (i == input.size() / 2 && input.size() % 2 == 1) {
-      smaller_part.push_back(input[i]);
-      break;
-    }
-    smaller_part.push_back(input[i]);
-    bigger_part.push_back(input[i + middle]);
-  }
+  std::vector<int> smaller_part(input.begin(), input.begin() + middle);
+  std::vector<int> bigger_part(input.begin() + middle, input.end());
+
   smaller_part = Sort(smaller_part);
   bigger_part = Sort(bigger_part);
   for (int i = 0, j = 0; i < smaller_part.size() || j < bigger_part.size();) {
