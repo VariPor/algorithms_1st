@@ -3,9 +3,9 @@
 #include "exception"
 
 bool operator==(const Tree::Node &left, const Tree::Node &right) {
-  if (left.parent != right.parent) return false;
-  if (left.leftChild != right.leftChild) return false;
-  if (left.rightChild != right.rightChild) return false;
+  if (left.parent.lock() != right.parent.lock()) return false;
+  if (left.left_child != right.left_child) return false;
+  if (left.right_child != right.right_child) return false;
   return true;
 }
 
@@ -13,10 +13,10 @@ bool operator!=(const Tree::Node &left, const Tree::Node &right) {
   return !(left == right);
 }
 
-Tree::Node::Node(Node &node)
+Tree::Node::Node(const Node &node)
     : parent{node.parent},
-      leftChild{node.leftChild},
-      rightChild{node.rightChild},
+      left_child{node.left_child},
+      right_child{node.right_child},
       key{node.key},
       value{node.value} {}
 
@@ -32,13 +32,13 @@ bool Tree::Insert(int key, int value) {
 
 std::pair<Tree::Node &, bool> Tree::InsertWithoutSplay(int key, int value) {
   if (root == nullptr) {
-    root = std::shared_ptr<Node>(std::make_shared<Node>(Node(key, value)));
+    root = std::make_shared<Node>(Node(key, value));
     return std::pair<Tree::Node &, bool>(*(root.get()), true);
   }
   if (root->key < key)
-    return (Tree(root->leftChild).InsertWithoutSplay(key, value));
+    return (Tree(root->left_child).InsertWithoutSplay(key, value));
   if (root->key > key)
-    return Tree(root->rightChild).InsertWithoutSplay(key, value);
+    return Tree(root->right_child).InsertWithoutSplay(key, value);
   if (root->key == key)
     return std::pair<Tree::Node &, bool>(*(root.get()), false);
 }
@@ -54,9 +54,9 @@ Tree::Node &Tree::InsertOrUpdateWithoutSplay(int key, int value) {
     return *(root.get());
   }
   if (root->key < key)
-    return Tree(root->leftChild).InsertOrUpdateWithoutSplay(key, value);
+    return Tree(root->left_child).InsertOrUpdateWithoutSplay(key, value);
   if (root->key > key)
-    return Tree(root->rightChild).InsertOrUpdateWithoutSplay(key, value);
+    return Tree(root->right_child).InsertOrUpdateWithoutSplay(key, value);
   if (root->key == key) {
     root->value = value;
     return *(root.get());
@@ -71,95 +71,95 @@ int Tree::Find(int key) {
 
 std::pair<Tree::Node &, int> Tree::FindWithoutSplay(int key) {
   if (root == nullptr) throw std::out_of_range("No such key\n");
-  if (root->key < key) Tree(root->leftChild).Find(key);
-  if (root->key > key) Tree(root->rightChild).Find(key);
+  if (root->key < key) Tree(root->left_child).Find(key);
+  if (root->key > key) Tree(root->right_child).Find(key);
   if (root->key == key)
     return std::pair<Node &, int>(*(root.get()), root->value);
 }
 
 void Tree::Delete(int key) {
   auto deleting_node = FindWithoutSplay(key).first;
-  if (deleting_node.leftChild == nullptr &&
-      deleting_node.rightChild == nullptr) {
+  if (deleting_node.left_child == nullptr &&
+      deleting_node.right_child == nullptr) {
     if (*(root.get()) != deleting_node) {
       if (IsLeftChild(deleting_node))
-        deleting_node.parent->leftChild = nullptr;
+        deleting_node.parent.lock()->left_child = nullptr;
       else
-        deleting_node.parent->rightChild = nullptr;
+        deleting_node.parent.lock()->right_child = nullptr;
     }
   } else
     root = nullptr;
 
-  if (deleting_node.leftChild == nullptr &&
-      deleting_node.rightChild != nullptr) {
+  if (deleting_node.left_child == nullptr &&
+      deleting_node.right_child != nullptr) {
     if (*(root.get()) != deleting_node) {
       if (IsLeftChild(deleting_node))
-        deleting_node.parent->leftChild = deleting_node.rightChild;
+        deleting_node.parent.lock()->left_child = deleting_node.right_child;
       else
-        deleting_node.parent->rightChild = deleting_node.rightChild;
-      deleting_node.rightChild = deleting_node.parent;
+        deleting_node.parent.lock()->right_child = deleting_node.right_child;
+      deleting_node.right_child = deleting_node.parent.lock();
     }
   }
 
-  if (deleting_node.leftChild != nullptr &&
-      deleting_node.rightChild == nullptr) {
+  if (deleting_node.left_child != nullptr &&
+      deleting_node.right_child == nullptr) {
     if (*(root.get()) != deleting_node) {
       if (IsLeftChild(deleting_node))
-        deleting_node.parent->leftChild = deleting_node.leftChild;
+        deleting_node.parent.lock()->left_child = deleting_node.left_child;
       else
-        deleting_node.parent->rightChild = deleting_node.leftChild;
-      deleting_node.leftChild = deleting_node.parent;
+        deleting_node.parent.lock()->right_child = deleting_node.left_child;
+      deleting_node.left_child = deleting_node.parent.lock();
     }
   }
 
-  if (deleting_node.leftChild != nullptr &&
-      deleting_node.rightChild != nullptr) {
-    auto new_node = deleting_node.rightChild;
-    while (new_node->leftChild != nullptr) new_node = new_node->leftChild;
+  if (deleting_node.left_child != nullptr &&
+      deleting_node.right_child != nullptr) {
+    auto new_node = deleting_node.right_child;
+    while (new_node->left_child != nullptr) new_node = new_node->left_child;
     if (IsLeftChild(*(new_node.get())))
-      new_node->parent->leftChild = nullptr;
+      new_node->parent.lock()->left_child = nullptr;
     else
-      new_node->parent->rightChild = nullptr;
+      new_node->parent.lock()->right_child = nullptr;
     new_node->parent = deleting_node.parent;
-    new_node->leftChild = deleting_node.leftChild;
-    new_node->rightChild = deleting_node.rightChild;
+    new_node->left_child = deleting_node.left_child;
+    new_node->right_child = deleting_node.right_child;
     if (IsLeftChild(*(new_node.get())))
-      deleting_node.parent->leftChild = new_node;
+      deleting_node.parent.lock()->left_child = new_node;
     else
-      deleting_node.parent->rightChild = new_node;
-    deleting_node.leftChild->parent = new_node;
-    deleting_node.rightChild->parent = new_node;
+      deleting_node.parent.lock()->right_child = new_node;
+    deleting_node.left_child->parent = new_node;
+    deleting_node.right_child->parent = new_node;
   }
 }
 
 void Tree::Zig(Node &element) {
-  if (!element.parent) return;
-  if (element == *(element.parent->leftChild.get())) {
+  if (!element.parent.lock()) return;
+  if (element == *(element.parent.lock()->left_child.get())) {
     auto old_parent = element.parent;
-    auto old_left_child = element.leftChild;
-    auto old_right_child = element.rightChild;
-    *(element.parent->parent) = element;
-    element.rightChild = element.parent;
-    element.parent = old_parent->parent;
-    *(old_parent->leftChild) = element;
-    old_parent->leftChild = old_right_child;
+    auto old_left_child = element.left_child;
+    auto old_right_child = element.right_child;
+    *(element.parent.lock()->parent.lock()) = element;
+    element.right_child = element.parent.lock();
+    element.parent = old_parent.lock()->parent;
+    *(old_parent.lock()->left_child) = element;
+    old_parent.lock()->left_child = old_right_child;
     old_right_child->parent = old_parent;
   }
-  if (element == *(element.parent->rightChild.get())) {
+  if (element == *(element.parent.lock()->right_child.get())) {
     auto old_parent = element.parent;
-    auto old_right_child = element.rightChild;
-    auto old_left_child = element.leftChild;
-    *(element.parent->parent) = element;
-    element.leftChild = element.parent;
-    element.parent = old_parent->parent;
-    *(old_parent->rightChild) = element;
-    old_parent->rightChild = old_left_child;
+    auto old_right_child = element.right_child;
+    auto old_left_child = element.left_child;
+    *(element.parent.lock()->parent.lock()) = element;
+    element.left_child = element.parent.lock();
+    element.parent = old_parent.lock()->parent;
+    *(old_parent.lock()->right_child) = element;
+    old_parent.lock()->right_child = old_left_child;
     old_left_child->parent = old_parent;
   }
 }
 
 void Tree::ZigZig(Node &element) {
-  Zig(*element.parent);
+  Zig(*element.parent.lock());
   Zig(element);
 }
 
@@ -177,23 +177,25 @@ void Tree::Splay(Node &element) {
 }
 
 bool Tree::IsDirectChild(const Node &element) {
-  if (IsLeftChild(element) && IsLeftChild(*(element.parent))) return true;
-  if (IsRightChild(element) && IsRightChild(*(element.parent))) return true;
+  if (IsLeftChild(element) && IsLeftChild(*(element.parent.lock()))) return true;
+  if (IsRightChild(element) && IsRightChild(*(element.parent.lock()))) return true;
   return false;
 }
 
 bool Tree::IsLeftChild(const Node &element) {
-  if (element == *(element.parent->leftChild.get())) return true;
+  if (element.parent.lock() == nullptr) return false;
+  if (element == *(element.parent.lock()->left_child.get())) return true;
   return false;
 }
 
 bool Tree::IsRightChild(const Node &element) {
-  if (element == *(element.parent->rightChild.get())) return true;
+  if (element.parent.lock() == nullptr) return false;
+  if (element == *(element.parent.lock()->right_child.get())) return true;
   return false;
 }
 
 bool Tree::HaveGrandpa(const Node &element) {
-  if (element.parent == nullptr) return false;
-  if (element.parent->parent != nullptr) return true;
+  if (element.parent.lock() == nullptr) return false;
+  if (element.parent.lock()->parent.lock() != nullptr) return true;
   return false;
 }

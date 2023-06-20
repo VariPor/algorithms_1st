@@ -4,15 +4,14 @@
 class Tree {
  public:
   struct Node {
-    std::shared_ptr<Node> parent = nullptr;
-    std::shared_ptr<Node> leftChild = nullptr;
-    std::shared_ptr<Node> rightChild = nullptr;
+    std::weak_ptr<Node> parent;
+    std::shared_ptr<Node> left_child = nullptr;
+    std::shared_ptr<Node> right_child = nullptr;
     int value;
     int key;
     Node(int k, int v);
-    Node(Node& node);
+    Node(const Node& node);
 
-    Node(const Node& other) = default;
     Node& operator=(const Node& rhs) = default;
 
     Node(Node&& other) = default;
