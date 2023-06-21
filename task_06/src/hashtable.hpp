@@ -13,7 +13,7 @@ class HashTable {
   int Find(const std::string& key) const;
   size_t Size() const;
   bool Contains(const std::string& key);
-
+ 
  private:
   std::vector<std::vector<std::pair<std::string, int>>> data_;
   std::hash<std::string> hasher_;

@@ -27,7 +27,7 @@ std::vector<int> Sort(const std::vector<int>& input) {
                       smaller_part.end());
         break;
       }
-    }
+    } 
   }
   return output;
 }
