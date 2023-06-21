@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(PROJECT_NAME sandbox)
-project(${PROJECT_NAME})
+get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
+string(REPLACE " " "_" PROJECT_NAME ${PROJECT_NAME})
+project(${PROJECT_NAME} C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,11 +25,11 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 # Link runTests with what we want to test and the GTest and pthread library
-add_executable(sandbox_tests ${test_source_list})
+add_executable(${PROJECT_NAME}_tests ${test_source_list})
 target_link_libraries(
-  sandbox_tests
+  ${PROJECT_NAME}_tests
   GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(sandbox_tests)
+gtest_discover_tests(${PROJECT_NAME}_tests)

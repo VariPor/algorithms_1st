@@ -66,7 +66,7 @@ Tree::Node &Tree::InsertOrUpdateWithoutSplay(int key, int value) {
 int Tree::Find(int key) {
   auto result = FindWithoutSplay(key);
   Splay(result.first);
-  return result.second; 
+  return result.second;
 }
 
 std::pair<Tree::Node &, int> Tree::FindWithoutSplay(int key) {
@@ -79,6 +79,7 @@ std::pair<Tree::Node &, int> Tree::FindWithoutSplay(int key) {
 
 void Tree::Delete(int key) {
   auto deleting_node = FindWithoutSplay(key).first;
+
   if (deleting_node.left_child == nullptr &&
       deleting_node.right_child == nullptr) {
     if (*(root.get()) != deleting_node) {
@@ -177,8 +178,10 @@ void Tree::Splay(Node &element) {
 }
 
 bool Tree::IsDirectChild(const Node &element) {
-  if (IsLeftChild(element) && IsLeftChild(*(element.parent.lock()))) return true;
-  if (IsRightChild(element) && IsRightChild(*(element.parent.lock()))) return true;
+  if (IsLeftChild(element) && IsLeftChild(*(element.parent.lock())))
+    return true;
+  if (IsRightChild(element) && IsRightChild(*(element.parent.lock())))
+    return true;
   return false;
 }
 
