@@ -66,7 +66,7 @@ Tree::Node &Tree::InsertOrUpdateWithoutSplay(int key, int value) {
 int Tree::Find(int key) {
   auto result = FindWithoutSplay(key);
   Splay(result.first);
-  return result.second; 
+  return result.second;
 }
 
 std::pair<Tree::Node &, int> Tree::FindWithoutSplay(int key) {
@@ -146,7 +146,6 @@ void Tree::Zig(Node &element) {
     old_parent.lock()->left_child = old_right_child;
     old_right_child->parent = old_parent;
   }
-  
   if (element == *(element.parent.lock()->right_child.get())) {
     auto old_parent = element.parent;
     auto old_right_child = element.right_child;
