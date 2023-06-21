@@ -66,7 +66,7 @@ Tree::Node &Tree::InsertOrUpdateWithoutSplay(int key, int value) {
 int Tree::Find(int key) {
   auto result = FindWithoutSplay(key);
   Splay(result.first);
-  return result.second;
+  return result.second; 
 }
 
 std::pair<Tree::Node &, int> Tree::FindWithoutSplay(int key) {
