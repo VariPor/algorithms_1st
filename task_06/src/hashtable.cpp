@@ -7,7 +7,7 @@
 #include <vector>
 
 HashTable::HashTable(size_t width) : width_(width), data_(width) {}
-
+ 
 bool HashTable::Contains(const std::string& key) {
   size_t hash_w = hasher_(key) % width_;
   if (data_.at(hash_w).empty()) return false;
