@@ -79,6 +79,7 @@ std::pair<Tree::Node &, int> Tree::FindWithoutSplay(int key) {
 
 void Tree::Delete(int key) {
   auto deleting_node = FindWithoutSplay(key).first;
+
   if (deleting_node.left_child == nullptr &&
       deleting_node.right_child == nullptr) {
     if (*(root.get()) != deleting_node) {

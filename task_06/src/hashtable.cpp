@@ -11,6 +11,7 @@ HashTable::HashTable(size_t width) : width_(width), data_(width) {}
 bool HashTable::Contains(const std::string& key) {
   size_t hash_w = hasher_(key) % width_;
   if (data_.at(hash_w).empty()) return false;
+
   for (size_t i = 0; i < data_.at(hash_w).size(); ++i)
     if (data_.at(hash_w).at(i).first == key) return true;
   return false;
