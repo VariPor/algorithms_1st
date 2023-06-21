@@ -2,5 +2,17 @@ cmake_minimum_required(VERSION 3.10)
 
 project(additional_tasks)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/temperature)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/find_sum_numbers)
+file(GLOB_RECURSE tasks_dirs LIST_DIRECTORIES true ".")
+
+MESSAGE("dirs: ${task_dirs}")
+
+foreach(dir ${tasks_dirs})
+    IF(IS_DIRECTORY ${dir})
+        IF(NOT ${dir} MATCHES ".*src.*")
+            MESSAGE("additional task: ${dir}")
+            add_subdirectory(${dir})
+        ENDIF()
+    ELSE()
+        CONTINUE()
+    ENDIF()
+endforeach()
