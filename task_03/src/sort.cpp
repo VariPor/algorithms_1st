@@ -10,6 +10,7 @@ std::vector<int> Sort(const std::vector<int>& input) {
   std::vector<int> bigger_part(input.begin() + middle, input.end());
 
   bigger_part = Sort(bigger_part);
+  smaller_part = Sort(smaller_part);
   for (size_t i = 0, j = 0;
        i < smaller_part.size() || j < bigger_part.size();) {
     if (smaller_part[i] <= bigger_part[j]) {
