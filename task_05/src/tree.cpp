@@ -146,7 +146,7 @@ void Tree::Zig(Node &element) {
     old_parent.lock()->left_child = old_right_child;
     old_right_child->parent = old_parent;
   }
-
+  
   if (element == *(element.parent.lock()->right_child.get())) {
     auto old_parent = element.parent;
     auto old_right_child = element.right_child;
@@ -179,8 +179,10 @@ void Tree::Splay(Node &element) {
 }
 
 bool Tree::IsDirectChild(const Node &element) {
-  if (IsLeftChild(element) && IsLeftChild(*(element.parent.lock()))) return true;
-  if (IsRightChild(element) && IsRightChild(*(element.parent.lock()))) return true;
+  if (IsLeftChild(element) && IsLeftChild(*(element.parent.lock())))
+    return true;
+  if (IsRightChild(element) && IsRightChild(*(element.parent.lock())))
+    return true;
   return false;
 }
 
