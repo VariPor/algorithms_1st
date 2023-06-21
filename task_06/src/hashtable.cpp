@@ -4,43 +4,47 @@
 #include <functional>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
-HashTable::HashTable(size_t width) : width_(width) {}
+HashTable::HashTable(size_t width) : width_(width), data_(width) {}
 
 bool HashTable::Contains(const std::string& key) {
-  int hash_w = hasher_(key) % width_;
-  if (!data_[hash_w].empty() && data_[hash_w][0].first == key) return true;
+  size_t hash_w = hasher_(key) % width_;
+  if (data_.at(hash_w).empty()) return false;
+  for (size_t i = 0; i < data_.at(hash_w).size(); ++i)
+    if (data_.at(hash_w).at(i).first == key)
+      return true;
   return false;
 }
 
 bool HashTable::Insert(const std::string& key, int value) {
-  int hash_w = hasher_(key) % width_;
+  size_t hash_w = hasher_(key) % width_;
   if (Contains(key)) return false;
-  data_[hash_w].push_back(std::pair<std::string, int>(key, value));
+  data_.at(hash_w).push_back(std::pair<std::string, int>(key, value));
   keys_count_ += 1;
   this->Rehash();
   return true;
 }
 
 void HashTable::InsertOrUpdate(const std::string& key, int value) {
-  int hash_w = hasher_(key) % width_;
+  size_t hash_w = hasher_(key) % width_;
   if (!Contains(key)) keys_count_ += 1;
-  for (int i = 0; i < data_[hash_w].size(); ++i)
-    if (data_[hash_w][i].first == key) {
-      data_[hash_w][i].second = value;
+  for (size_t i = 0; i < data_.at(hash_w).size(); ++i)
+    if (data_.at(hash_w).at(i).first == key) {
+      data_.at(hash_w).at(i).second = value;
       return;
     }
-  data_[hash_w].push_back(std::pair<std::string, int>(key, value));
+  data_.at(hash_w).push_back(std::pair<std::string, int>(key, value));
   this->Rehash();
 }
 
 void HashTable::Remove(const std::string& key) {
-  int hash_w = hasher_(key) % width_;
+  size_t hash_w = hasher_(key) % width_;
   if (!Contains(key)) throw std::out_of_range("no such key");
   keys_count_ -= 1;
-  for (int i = 0; i < data_[hash_w].size(); ++i)
-    if (data_[hash_w][i].first == key) {
-      data_[hash_w].erase(data_[hash_w].begin() + i);
+  for (size_t i = 0; i < data_.at(hash_w).size(); ++i)
+    if (data_.at(hash_w).at(i).first == key) {
+      data_.at(hash_w).erase(data_.at(hash_w).begin() + i);
       this->Rehash();
       return;
     }
@@ -48,11 +52,12 @@ void HashTable::Remove(const std::string& key) {
 }
 
 int HashTable::Find(const std::string& key) const {
-  int hash_w = hasher_(key) % width_;
-  for (int i = 0; i < data_[hash_w].size(); ++i)
-    if (data_[hash_w][i].first == key) 
+  size_t hash_w = hasher_(key) % width_;
+  for (size_t i = 0; i < data_.at(hash_w).size(); ++i)
+    if (data_.at(hash_w).at(i).first == key) 
       return data_.at(hash_w).at(i).second;
 }
+
 
 size_t HashTable::Size() const { return keys_count_; }
 
@@ -65,8 +70,8 @@ void HashTable::Rehash() {
   if (keys_count_ >= width_  * 0.8)
     new_hash_table = HashTable(width_ * 2);
 
-  for (int i = 0; i < width_; ++i)
-    for (int j = 0; j < data_[i].size(); ++j)
+  for (size_t i = 0; i < width_; ++i)
+    for (size_t j = 0; j < data_.at(i).size(); ++j)
       new_hash_table.Insert(data_.at(i).at(j).first, data_.at(i).at(j).second);
 
   *this = new_hash_table;
